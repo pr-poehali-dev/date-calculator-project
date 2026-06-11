@@ -180,7 +180,7 @@ function ResultRow({ label, value, nums }: { label: string; value: string; nums:
       >
         {value}
         <span style={{ fontSize: "13px", color: "#c5bfb5", fontWeight: 400, marginLeft: "6px" }}>
-          ({nums.join(" ")})
+          ({nums.join("")})
         </span>
       </span>
     </div>
@@ -408,6 +408,26 @@ export default function Index() {
             marginBottom: "16px",
           }}
         >
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
+            <button
+              onClick={() => { setDate1({ day: "", month: "", year: "" }); setDate2({ day: "", month: "", year: "" }); }}
+              style={{
+                background: "none",
+                border: "none",
+                fontSize: "12px",
+                color: "#c5bfb5",
+                fontFamily: "'Golos Text', sans-serif",
+                cursor: "pointer",
+                letterSpacing: "0.04em",
+                padding: "2px 0",
+                transition: "color 0.15s ease",
+              }}
+              onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "#b5936a")}
+              onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "#c5bfb5")}
+            >
+              Очистить
+            </button>
+          </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <DateRow label="Дата 1" value={date1} onChange={setDate1} />
             <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "0 8px" }}>
