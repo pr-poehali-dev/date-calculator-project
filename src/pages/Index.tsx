@@ -196,6 +196,15 @@ function DateRow({ label, value, onChange }: DateRowProps) {
     onChange({ ...value, [field]: clean });
   };
 
+  const fillToday = () => {
+    const now = new Date();
+    onChange({
+      day: String(now.getDate()).padStart(2, "0"),
+      month: String(now.getMonth() + 1).padStart(2, "0"),
+      year: String(now.getFullYear()),
+    });
+  };
+
   const inputStyle: React.CSSProperties = {
     width: "48px",
     height: "48px",
@@ -241,6 +250,34 @@ function DateRow({ label, value, onChange }: DateRowProps) {
         {label}
       </span>
       <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+        <button
+          onClick={fillToday}
+          style={{
+            background: "none",
+            border: "1.5px solid #e8e4de",
+            borderRadius: "7px",
+            padding: "4px 8px",
+            fontSize: "11px",
+            color: "#b5936a",
+            fontFamily: "'Golos Text', sans-serif",
+            fontWeight: 500,
+            cursor: "pointer",
+            letterSpacing: "0.04em",
+            transition: "all 0.15s ease",
+            marginBottom: "18px",
+            whiteSpace: "nowrap",
+          }}
+          onMouseEnter={(e) => {
+            (e.target as HTMLButtonElement).style.borderColor = "#b5936a";
+            (e.target as HTMLButtonElement).style.background = "#fdf8f3";
+          }}
+          onMouseLeave={(e) => {
+            (e.target as HTMLButtonElement).style.borderColor = "#e8e4de";
+            (e.target as HTMLButtonElement).style.background = "none";
+          }}
+        >
+          Сегодня
+        </button>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
           <input
             style={inputStyle}
