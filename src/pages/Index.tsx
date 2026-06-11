@@ -149,7 +149,7 @@ const wStr = (n: number) => plural(n, "неделя", "недели", "неде�
 const dStr = (n: number) => plural(n, "день", "дня", "дней");
 
 const HIGHLIGHT_BG = new Set(["119","911","116","611","239","932","329","923","293","392","666","616","69","96","216","612","358","853"]);
-const HIGHLIGHT_UNDERLINE = new Set(["1119","9111","1116","6111","999","966","996","669","699","696","969","916","619","919","219","912","144","441","44","55"]);
+const HIGHLIGHT_UNDERLINE = new Set(["1119","9111","1116","6111","999","966","996","669","699","696","969","916","619","919","219","912","144","441","44","55","126","621","162","261"]);
 
 function ResultRow({ label, value, nums }: { label: string; value: string; nums: number[] }) {
   const key = nums.join("");
@@ -158,9 +158,9 @@ function ResultRow({ label, value, nums }: { label: string; value: string; nums:
 
   let numStyle: React.CSSProperties = { fontSize: "13px", color: "#c5bfb5", fontWeight: 400, marginLeft: "6px" };
   if (isBg) {
-    numStyle = { ...numStyle, color: "#1a1713", background: "#ffe066", borderRadius: "4px", padding: "1px 4px" };
+    numStyle = { ...numStyle, fontSize: "15px", fontWeight: 700, color: "#1a1713", background: "#ffd700", borderRadius: "4px", padding: "1px 5px" };
   } else if (isUnderline) {
-    numStyle = { ...numStyle, color: "#b5936a", textDecoration: "underline", textDecorationColor: "#ffe066", textDecorationThickness: "2px", textUnderlineOffset: "3px" };
+    numStyle = { ...numStyle, fontSize: "15px", fontWeight: 700, color: "#1a1713", textDecoration: "underline", textDecorationColor: "#ffd700", textDecorationThickness: "3px", textUnderlineOffset: "3px" };
   }
 
   return (
