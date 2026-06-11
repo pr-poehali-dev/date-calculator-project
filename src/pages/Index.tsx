@@ -151,6 +151,48 @@ const dStr = (n: number) => plural(n, "день", "дня", "дней");
 const HIGHLIGHT_BG = new Set(["119","911","116","611","239","932","329","923","293","392","666","616","69","96","216","612","358","853"]);
 const HIGHLIGHT_UNDERLINE = new Set(["1119","9111","1116","6111","999","966","996","669","699","696","969","916","619","919","219","912","144","441","44","55","126","621","162","261","385","583","835","538"]);
 
+function getNumHighlight(n: number): "bg" | "underline" | null {
+  const s = String(n);
+  if (HIGHLIGHT_BG.has(s)) return "bg";
+  if (HIGHLIGHT_UNDERLINE.has(s)) return "underline";
+  return null;
+}
+
+function HighlightedNum({ n }: { n: number }) {
+  const h = getNumHighlight(n);
+  if (h === "bg") {
+    return (
+      <span style={{ background: "#ffd700", borderRadius: "3px", padding: "0 3px", color: "#1a1713", fontWeight: 700 }}>
+        {n}
+      </span>
+    );
+  }
+  if (h === "underline") {
+    return (
+      <span style={{ textDecoration: "underline", textDecorationColor: "#ffd700", textDecorationThickness: "3px", textUnderlineOffset: "3px", color: "#1a1713", fontWeight: 700 }}>
+        {n}
+      </span>
+    );
+  }
+  return <>{n}</>;
+}
+
+function renderValue(text: string, nums: number[]): React.ReactNode {
+  if (nums.every(n => getNumHighlight(n) === null)) return text;
+  const parts = text.split(/(\d+)/);
+  const numsCopy = [...nums];
+  return parts.map((part, i) => {
+    if (/^\d+$/.test(part)) {
+      const n = numsCopy.shift();
+      if (n !== undefined && getNumHighlight(n) !== null) {
+        return <HighlightedNum key={i} n={n} />;
+      }
+      return <span key={i}>{part}</span>;
+    }
+    return <span key={i}>{part}</span>;
+  });
+}
+
 function ResultRow({ label, value, nums }: { label: string; value: string; nums: number[] }) {
   const key = nums.join("");
   const isBg = HIGHLIGHT_BG.has(key);
@@ -192,7 +234,7 @@ function ResultRow({ label, value, nums }: { label: string; value: string; nums:
           fontWeight: 500,
         }}
       >
-        {value}
+        {renderValue(value, nums)}
         <span style={numStyle}>
           ({key})
         </span>
