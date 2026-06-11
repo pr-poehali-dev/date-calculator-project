@@ -148,7 +148,21 @@ const mStr = (n: number) => plural(n, "месяц", "месяца", "месяц�
 const wStr = (n: number) => plural(n, "неделя", "недели", "недель");
 const dStr = (n: number) => plural(n, "день", "дня", "дней");
 
+const HIGHLIGHT_BG = new Set(["119","911","116","611","239","932","329","923","293","392","666","616","69","96","216","612","358","853"]);
+const HIGHLIGHT_UNDERLINE = new Set(["1119","9111","1116","6111","999","966","996","669","699","696","969","916","619","919","219","912","144","441","44","55"]);
+
 function ResultRow({ label, value, nums }: { label: string; value: string; nums: number[] }) {
+  const key = nums.join("");
+  const isBg = HIGHLIGHT_BG.has(key);
+  const isUnderline = HIGHLIGHT_UNDERLINE.has(key);
+
+  let numStyle: React.CSSProperties = { fontSize: "13px", color: "#c5bfb5", fontWeight: 400, marginLeft: "6px" };
+  if (isBg) {
+    numStyle = { ...numStyle, color: "#1a1713", background: "#ffe066", borderRadius: "4px", padding: "1px 4px" };
+  } else if (isUnderline) {
+    numStyle = { ...numStyle, color: "#b5936a", textDecoration: "underline", textDecorationColor: "#ffe066", textDecorationThickness: "2px", textUnderlineOffset: "3px" };
+  }
+
   return (
     <div
       style={{
@@ -179,8 +193,8 @@ function ResultRow({ label, value, nums }: { label: string; value: string; nums:
         }}
       >
         {value}
-        <span style={{ fontSize: "13px", color: "#c5bfb5", fontWeight: 400, marginLeft: "6px" }}>
-          ({nums.join("")})
+        <span style={numStyle}>
+          ({key})
         </span>
       </span>
     </div>
