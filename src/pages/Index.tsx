@@ -148,7 +148,7 @@ const mStr = (n: number) => plural(n, "месяц", "месяца", "месяц�
 const wStr = (n: number) => plural(n, "неделя", "недели", "недель");
 const dStr = (n: number) => plural(n, "день", "дня", "дней");
 
-function ResultRow({ label, value }: { label: string; value: string }) {
+function ResultRow({ label, value, nums }: { label: string; value: string; nums: number[] }) {
   return (
     <div
       style={{
@@ -179,6 +179,9 @@ function ResultRow({ label, value }: { label: string; value: string }) {
         }}
       >
         {value}
+        <span style={{ fontSize: "13px", color: "#c5bfb5", fontWeight: 400, marginLeft: "6px" }}>
+          ({nums.join(" ")})
+        </span>
       </span>
     </div>
   );
@@ -405,15 +408,41 @@ export default function Index() {
             marginBottom: "16px",
           }}
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <DateRow label="Дата 1" value={date1} onChange={setDate1} />
-            <div
-              style={{
-                height: "1px",
-                background: "#f0ede8",
-                margin: "0 8px",
-              }}
-            />
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "0 8px" }}>
+              <div style={{ flex: 1, height: "1px", background: "#f0ede8" }} />
+              <button
+                onClick={() => { setDate1(date2); setDate2(date1); }}
+                title="Поменять даты местами"
+                style={{
+                  background: "#faf9f7",
+                  border: "1.5px solid #e8e4de",
+                  borderRadius: "8px",
+                  width: "32px",
+                  height: "32px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                  color: "#b5936a",
+                  transition: "all 0.15s ease",
+                  flexShrink: 0,
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#b5936a";
+                  (e.currentTarget as HTMLButtonElement).style.background = "#fdf8f3";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#e8e4de";
+                  (e.currentTarget as HTMLButtonElement).style.background = "#faf9f7";
+                }}
+              >
+                ⇅
+              </button>
+              <div style={{ flex: 1, height: "1px", background: "#f0ede8" }} />
+            </div>
             <DateRow label="Дата 2" value={date2} onChange={setDate2} />
           </div>
         </div>
@@ -529,112 +558,51 @@ export default function Index() {
               Результат
             </div>
 
-            {/* В годах — только если остаток дней после лет = 0 */}
             {result.years > 0 && result.remDaysAfterYears === 0 && (
-              <ResultRow label="В годах" value={yStr(result.years)} />
+              <ResultRow label="В годах" value={yStr(result.years)} nums={[result.years]} />
             )}
-
-            {/* В годах и днях — только если годы > 0 и остаток дней > 0 */}
             {result.years > 0 && result.remDaysAfterYears > 0 && (
-              <ResultRow
-                label="В годах и днях"
-                value={`${yStr(result.years)} и ${dStr(result.remDaysAfterYears)}`}
-              />
+              <ResultRow label="В годах и днях" value={`${yStr(result.years)} и ${dStr(result.remDaysAfterYears)}`} nums={[result.years, result.remDaysAfterYears]} />
             )}
-
-            {/* В годах и месяцах — только если годы > 0, месяцы > 0, остаток дней после лет+месяцев = 0 */}
             {result.years > 0 && result.remMonthsAfterYears > 0 && result.remDaysAfterYearsMonths === 0 && (
-              <ResultRow
-                label="В годах и месяцах"
-                value={`${yStr(result.years)} и ${mStr(result.remMonthsAfterYears)}`}
-              />
+              <ResultRow label="В годах и месяцах" value={`${yStr(result.years)} и ${mStr(result.remMonthsAfterYears)}`} nums={[result.years, result.remMonthsAfterYears]} />
             )}
-
-            {/* В годах и неделях — только если годы > 0, недели > 0, остаток дней после лет+недель = 0 */}
             {result.years > 0 && result.remWeeksAfterYears > 0 && result.remDaysAfterYearsWeeks === 0 && (
-              <ResultRow
-                label="В годах и неделях"
-                value={`${yStr(result.years)} и ${wStr(result.remWeeksAfterYears)}`}
-              />
+              <ResultRow label="В годах и неделях" value={`${yStr(result.years)} и ${wStr(result.remWeeksAfterYears)}`} nums={[result.years, result.remWeeksAfterYears]} />
             )}
-
-            {/* В годах, месяцах и неделях — годы > 0, месяцы > 0, недели > 0, остаток дней = 0 */}
             {result.years > 0 && result.remMonthsAfterYears > 0 && result.remWeeksAfterYearsMonths > 0 && result.remDaysAfterYearsMonthsWeeks === 0 && (
-              <ResultRow
-                label="В годах, месяцах и неделях"
-                value={`${yStr(result.years)}, ${mStr(result.remMonthsAfterYears)} и ${wStr(result.remWeeksAfterYearsMonths)}`}
-              />
+              <ResultRow label="В годах, месяцах и неделях" value={`${yStr(result.years)}, ${mStr(result.remMonthsAfterYears)} и ${wStr(result.remWeeksAfterYearsMonths)}`} nums={[result.years, result.remMonthsAfterYears, result.remWeeksAfterYearsMonths]} />
             )}
-
-            {/* В годах, месяцах и днях — годы > 0, месяцы > 0, дни > 0 */}
             {result.years > 0 && result.remMonthsAfterYears > 0 && result.remDaysAfterYearsMonths > 0 && (
-              <ResultRow
-                label="В годах, месяцах и днях"
-                value={`${yStr(result.years)}, ${mStr(result.remMonthsAfterYears)} и ${dStr(result.remDaysAfterYearsMonths)}`}
-              />
+              <ResultRow label="В годах, месяцах и днях" value={`${yStr(result.years)}, ${mStr(result.remMonthsAfterYears)} и ${dStr(result.remDaysAfterYearsMonths)}`} nums={[result.years, result.remMonthsAfterYears, result.remDaysAfterYearsMonths]} />
             )}
-
-            {/* В годах, неделях и днях — годы > 0, недели > 0, дни > 0 */}
             {result.years > 0 && result.remWeeksAfterYears > 0 && result.remDaysAfterYearsWeeks > 0 && (
-              <ResultRow
-                label="В годах, неделях и днях"
-                value={`${yStr(result.years)}, ${wStr(result.remWeeksAfterYears)} и ${dStr(result.remDaysAfterYearsWeeks)}`}
-              />
+              <ResultRow label="В годах, неделях и днях" value={`${yStr(result.years)}, ${wStr(result.remWeeksAfterYears)} и ${dStr(result.remDaysAfterYearsWeeks)}`} nums={[result.years, result.remWeeksAfterYears, result.remDaysAfterYearsWeeks]} />
             )}
-
-            {/* В годах, месяцах, неделях и днях — все компоненты > 0 */}
             {result.years > 0 && result.remMonthsAfterYears > 0 && result.remWeeksAfterYearsMonths > 0 && result.remDaysAfterYearsMonthsWeeks > 0 && (
-              <ResultRow
-                label="В годах, месяцах, неделях и днях"
-                value={`${yStr(result.years)}, ${mStr(result.remMonthsAfterYears)}, ${wStr(result.remWeeksAfterYearsMonths)} и ${dStr(result.remDaysAfterYearsMonthsWeeks)}`}
-              />
+              <ResultRow label="В годах, месяцах, неделях и днях" value={`${yStr(result.years)}, ${mStr(result.remMonthsAfterYears)}, ${wStr(result.remWeeksAfterYearsMonths)} и ${dStr(result.remDaysAfterYearsMonthsWeeks)}`} nums={[result.years, result.remMonthsAfterYears, result.remWeeksAfterYearsMonths, result.remDaysAfterYearsMonthsWeeks]} />
             )}
 
             {result.years > 0 && <div style={{ height: "1px", background: "#e8e4de", margin: "8px 0 0" }} />}
 
-            {/* В месяцах — только если остаток дней после месяцев = 0 */}
             {result.months > 0 && result.remDaysAfterMonths === 0 && (
-              <ResultRow label="В месяцах" value={mStr(result.months)} />
+              <ResultRow label="В месяцах" value={mStr(result.months)} nums={[result.months]} />
             )}
-
-            {/* В неделях — только если totalDays кратно 7 */}
             {result.weeks > 0 && result.totalDays % 7 === 0 && (
-              <ResultRow label="В неделях" value={wStr(result.weeks)} />
+              <ResultRow label="В неделях" value={wStr(result.weeks)} nums={[result.weeks]} />
             )}
-
-            {/* В днях — всегда */}
-            <ResultRow label="В днях" value={dStr(result.totalDays)} />
-
-            {/* В месяцах и неделях — месяцы > 0, недели > 0, остаток дней = 0 */}
+            <ResultRow label="В днях" value={dStr(result.totalDays)} nums={[result.totalDays]} />
             {result.months > 0 && result.remWeeksAfterMonths > 0 && result.remDaysAfterMonthsWeeks === 0 && (
-              <ResultRow
-                label="В месяцах и неделях"
-                value={`${mStr(result.months)} и ${wStr(result.remWeeksAfterMonths)}`}
-              />
+              <ResultRow label="В месяцах и неделях" value={`${mStr(result.months)} и ${wStr(result.remWeeksAfterMonths)}`} nums={[result.months, result.remWeeksAfterMonths]} />
             )}
-
-            {/* В месяцах и днях — месяцы > 0, дни > 0 */}
             {result.months > 0 && result.remDaysAfterMonths > 0 && (
-              <ResultRow
-                label="В месяцах и днях"
-                value={`${mStr(result.months)} и ${dStr(result.remDaysAfterMonths)}`}
-              />
+              <ResultRow label="В месяцах и днях" value={`${mStr(result.months)} и ${dStr(result.remDaysAfterMonths)}`} nums={[result.months, result.remDaysAfterMonths]} />
             )}
-
-            {/* В неделях и днях — недели > 0, остаток дней > 0 */}
             {result.weeks > 0 && result.totalDays % 7 > 0 && (
-              <ResultRow
-                label="В неделях и днях"
-                value={`${wStr(result.weeks)} и ${dStr(result.totalDays % 7)}`}
-              />
+              <ResultRow label="В неделях и днях" value={`${wStr(result.weeks)} и ${dStr(result.totalDays % 7)}`} nums={[result.weeks, result.totalDays % 7]} />
             )}
-
-            {/* В месяцах, неделях и днях — месяцы > 0, недели > 0, дни > 0 */}
             {result.months > 0 && result.remWeeksAfterMonths > 0 && result.remDaysAfterMonthsWeeks > 0 && (
-              <ResultRow
-                label="В месяцах, неделях и днях"
-                value={`${mStr(result.months)}, ${wStr(result.remWeeksAfterMonths)} и ${dStr(result.remDaysAfterMonthsWeeks)}`}
-              />
+              <ResultRow label="В месяцах, неделях и днях" value={`${mStr(result.months)}, ${wStr(result.remWeeksAfterMonths)} и ${dStr(result.remDaysAfterMonthsWeeks)}`} nums={[result.months, result.remWeeksAfterMonths, result.remDaysAfterMonthsWeeks]} />
             )}
           </div>
         )}
